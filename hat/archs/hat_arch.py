@@ -769,7 +769,8 @@ class HAT(nn.Module):
         self.overlap_ratio = overlap_ratio
 
         num_in_ch = in_chans
-        num_out_ch = in_chans
+        # num_out_ch = in_chans
+        num_out_ch = 1
         num_feat = 64
         self.img_range = img_range
         if in_chans == 3:

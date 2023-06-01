@@ -1,0 +1,3 @@
+python hat/train.py -opt options/train/train_HAT_SRx2_from_scratch.yml
+
+python hat/train.py -opt options/train/train_LFHAT_SRx4_from_scratch.yml

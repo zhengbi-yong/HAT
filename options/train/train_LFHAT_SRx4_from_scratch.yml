@@ -1,22 +1,22 @@
 # general settings
-name: train_HAT_SRx2_from_scratch
+name: train_LFHAT_SRx4_from_scratch
 model_type: HATModel
-scale: 2
+scale: 4
 num_gpu: auto
 manual_seed: 0
 
 # dataset and data loader settings
 datasets:
   train:
-    name: DF2K
-    type: PairedImageDataset
-    dataroot_gt: datasets/DF2K/DIV2K/DIV2K_train_HR_sub
-    dataroot_lq: datasets/DF2K/DIV2K/DIV2K_train_LR_bicubic/X2_sub
-    meta_info_file: hat/data/meta_info/meta_info_DIV2K800sub_GT.txt
+    name: LightField
+    type: LightFieldPairedDataset
+    dataroot_gt: datasets/LightField/LF_HR
+    dataroot_lq: datasets/LightField/LF_LR
+    meta_info_file: hat/data/meta_info/meta_info_LF_HR.txt
     io_backend:
       type: disk
 
-    gt_size: 128
+    gt_size: 256
     use_hflip: true
     use_rot: true
 
@@ -27,21 +27,21 @@ datasets:
     dataset_enlarge_ratio: 1
     prefetch_mode: ~
 
-  val_1:
-    name: Set5
-    type: PairedImageDataset
-    dataroot_gt: ./datasets/Set5/GTmod2
-    dataroot_lq: ./datasets/Set5/LRbicx2
-    io_backend:
-      type: disk
+  # val_1:
+  #   name: Set5
+  #   type: PairedImageDataset
+  #   dataroot_gt: ./datasets/Set5/GTmod2
+  #   dataroot_lq: ./datasets/Set5/LRbicx2
+  #   io_backend:
+  #     type: disk
 
-  val_2:
-    name: Set14
-    type: PairedImageDataset
-    dataroot_gt: ./datasets/Set14/GTmod2
-    dataroot_lq: ./datasets/Set14/LRbicx2
-    io_backend:
-      type: disk
+  # val_2:
+  #   name: Set14
+  #   type: PairedImageDataset
+  #   dataroot_gt: ./datasets/Set14/GTmod2
+  #   dataroot_lq: ./datasets/Set14/LRbicx2
+  #   io_backend:
+  #     type: disk
 
   # val_3:
   #   name: Urban100
@@ -54,8 +54,8 @@ datasets:
 # network structures
 network_g:
   type: HAT
-  upscale: 2
-  in_chans: 3
+  upscale: 4
+  in_chans: 32
   img_size: 64
   window_size: 16
   compress_ratio: 3
@@ -87,10 +87,10 @@ train:
 
   scheduler:
     type: MultiStepLR
-    milestones: [250000, 400000, 450000, 475000]
+    milestones: [25000, 40000, 45000, 47500]
     gamma: 0.5
 
-  total_iter: 500000
+  total_iter: 50000
   warmup_iter: -1 # no warm up
 
   # losses
