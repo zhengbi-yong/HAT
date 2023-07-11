@@ -1,6 +1,11 @@
-
+# 建立数据集软链接
+mklink /D C:\Sisyphus\Projects\HAT\datasets\LightField\TEST D:\CVdatasets\TEST
+mklink /D C:\Sisyphus\Projects\HAT\datasets\LightField\LFDatasetWithNoise D:\CVdatasets\LFDatasetWithNoise
+# 训练命令
 python hat/train.py -opt options/train/train_LFHAT_SRx4_from_scratch.yml
-
+# 测试命令
 python hat/test.py -opt options/test/LFHAT_SRx4.yml
-
+# 推理命令
+python hat/test.py -opt options/test/LFHAT_SRx4_test.yml
+# 查看训练过程数据
 tensorboard --logdir="D:\YONGZHENGBI\MyHAT\HAT\tb_logger\train_LFHAT_SRx4_from_scratch"

@@ -1,6 +1,6 @@
 # general settings
 name: train_LFHAT_SRx4_from_scratch
-model_type: HATModel
+model_type: LFHATModel
 scale: 4
 num_gpu: auto
 manual_seed: 0
@@ -53,7 +53,7 @@ datasets:
 
 # network structures
 network_g:
-  type: HAT
+  type: LFHAT
   upscale: 4
   in_chans: 32
   img_size: 64

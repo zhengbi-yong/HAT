@@ -10,7 +10,7 @@ from einops import rearrange
 
 def drop_path(x, drop_prob: float = 0., training: bool = False):
     """Drop paths (Stochastic Depth) per sample (when applied in main path of residual blocks).
-
+    随机深度丢弃，用于残差块的主路径
     From: https://github.com/rwightman/pytorch-image-models/blob/master/timm/models/layers/drop.py
     """
     if drop_prob == 0. or not training:
@@ -39,14 +39,18 @@ class DropPath(nn.Module):
 
 class ChannelAttention(nn.Module):
     """Channel attention used in RCAN.
+    通道注意力，用于RCAN
     Args:
         num_feat (int): Channel number of intermediate features.
+        特征通道数
         squeeze_factor (int): Channel squeeze factor. Default: 16.
+        压缩因子
     """
 
     def __init__(self, num_feat, squeeze_factor=16):
         super(ChannelAttention, self).__init__()
         self.attention = nn.Sequential(
+            # 自适应平均池化
             nn.AdaptiveAvgPool2d(1),
             nn.Conv2d(num_feat, num_feat // squeeze_factor, 1, padding=0),
             nn.ReLU(inplace=True),
@@ -707,7 +711,7 @@ class Upsample(nn.Sequential):
 
 
 @ARCH_REGISTRY.register()
-class HAT(nn.Module):
+class LFHAT(nn.Module):
     r""" Hybrid Attention Transformer
         A PyTorch implementation of : `Activating More Pixels in Image Super-Resolution Transformer`.
         Some codes are based on SwinIR.
@@ -769,7 +773,8 @@ class HAT(nn.Module):
         self.overlap_ratio = overlap_ratio
 
         num_in_ch = in_chans
-        num_out_ch = in_chans
+        # num_out_ch = in_chans
+        num_out_ch = 1
         num_feat = 64
         self.img_range = img_range
         if in_chans == 3:
@@ -787,9 +792,11 @@ class HAT(nn.Module):
         self.register_buffer('relative_position_index_OCA', relative_position_index_OCA)
 
         # ------------------------- 1, shallow feature extraction ------------------------- #
+        # 简单的卷积层提取低分辨率特征
         self.conv_first = nn.Conv2d(num_in_ch, embed_dim, 3, 1, 1)
 
         # ------------------------- 2, deep feature extraction ------------------------- #
+        # 深层特征提取
         self.num_layers = len(depths)
         self.embed_dim = embed_dim
         self.ape = ape

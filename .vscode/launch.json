@@ -14,7 +14,7 @@
             "justMyCode": false,
             "args": [
                 "-opt",
-                "./options/train/train_LFHAT_SRx4_from_scratch.yml",
+                "./options/train/train_LFHAT_SRx0_from_scratch.yml",
                 "--debug"
             ]
         }

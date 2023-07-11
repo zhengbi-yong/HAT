@@ -1,6 +1,6 @@
 # general settings
-name: train_HAT_SRx4_ImageNet_from_scratch
-model_type: HATModel
+name: train_LFHAT_SRx4_from_scratch
+model_type: LFHATModel
 scale: 4
 num_gpu: auto
 manual_seed: 0
@@ -9,9 +9,10 @@ manual_seed: 0
 datasets:
   train:
     name: LightField
-    type: LightFieldPairedDataset
-    dataroot_gt: datasets/LightField/LF_HR
-    meta_info_file: hat/data/meta_info/meta_info_LF_HR.txt
+    type: LightFieldH5Dataset
+    dataroot_gt: datasets/LightField/LFDatasetWithNoise/train
+    dataroot_lq: datasets/LightField/LFDatasetWithNoise/train
+    # meta_info_file: hat/data/meta_info/meta_info_LF_HR.txt
     io_backend:
       type: disk
 
@@ -27,32 +28,32 @@ datasets:
     prefetch_mode: ~
 
   # val_1:
-  #   name: Set5
-  #   type: PairedImageDataset
-  #   dataroot_gt: ./datasets/Set5/GTmod4
-  #   dataroot_lq: ./datasets/Set5/LRbicx4
+  #   name: LightField
+  #   type: LightFieldPairedDataset
+  #   dataroot_gt: datasets/LightField/VAL_HR
+  #   dataroot_lq: datasets/LightField/VAL_LR
   #   io_backend:
   #     type: disk
 
   # val_2:
   #   name: Set14
   #   type: PairedImageDataset
-  #   dataroot_gt: ./datasets/Set14/GTmod4
-  #   dataroot_lq: ./datasets/Set14/LRbicx4
+  #   dataroot_gt: ./datasets/Set14/GTmod2
+  #   dataroot_lq: ./datasets/Set14/LRbicx2
   #   io_backend:
   #     type: disk
 
   # val_3:
   #   name: Urban100
   #   type: PairedImageDataset
-  #   dataroot_gt: ./datasets/urban100/GTmod4
-  #   dataroot_lq: ./datasets/urban100/LRbicx4
+  #   dataroot_gt: ./datasets/urban100/GTmod2
+  #   dataroot_lq: ./datasets/urban100/LRbicx2
   #   io_backend:
   #     type: disk
 
 # network structures
 network_g:
-  type: HAT
+  type: LFHAT
   upscale: 4
   in_chans: 32
   img_size: 64
@@ -73,6 +74,7 @@ network_g:
 path:
   pretrain_network_g: ~
   strict_load_g: true
+  # resume_state: ./experiments/train_LFHAT_step_01/training_states/50000.state
   resume_state: ~
 
 # training settings
@@ -86,10 +88,11 @@ train:
 
   scheduler:
     type: MultiStepLR
-    milestones: [30000, 50000, 65000, 70000, 75000]
+    milestones: [25000, 40000, 45000, 47500]
+    # milestones: [50000, 70000, 80000, 90000]
     gamma: 0.5
 
-  total_iter: 80000
+  total_iter: 50000
   warmup_iter: -1 # no warm up
 
   # losses
@@ -100,26 +103,26 @@ train:
 
 # validation settings
 val:
-  val_freq: !!float 1e4
+  val_freq: !!float 5e3
   save_img: false
   pbar: False
 
   metrics:
     psnr:
       type: calculate_psnr
-      crop_border: 4
+      crop_border: 2
       test_y_channel: true
       better: higher # the higher, the better. Default: higher
     ssim:
       type: calculate_ssim
-      crop_border: 4
+      crop_border: 2
       test_y_channel: true
       better: higher # the higher, the better. Default: higher
 
 # logging settings
 logger:
   print_freq: 100
-  save_checkpoint_freq: !!float 1e4
+  save_checkpoint_freq: !!float 5e3
   use_tb_logger: true
   wandb:
     project: ~
